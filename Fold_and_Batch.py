@@ -68,7 +68,8 @@ class Fold_and_Batch:
             T = self.N // M
             x = []
             y = []
-            for K in range(self.min_K, min(T, self.max_K), min(T, self.max_K) // 20):
+            # The method for computing cost is only correct for K up to T/2
+            for K in range(self.min_K, min(T // 2, self.max_K), min(T // 2, self.max_K) // 20):
                 x.append(K)
                 y.append(self.communication_cost_in_GB(M=M, K=K))
             fig.add_trace(go.Scatter(x=x, y=y, mode='markers+lines', name=f'{M}' ))
@@ -86,7 +87,8 @@ class Fold_and_Batch:
             T = self.N // M
             x = []
             y = []
-            for K in range(self.min_K, min(T, self.max_K), min(T, self.max_K) // 20):
+            # The method for computing cost is only correct for K up to T/2
+            for K in range(self.min_K, min(T // 2, self.max_K), min(T // 2, self.max_K) // 20):
                 x.append(K)
                 y.append(self.proof_size_in_GB(M=M, K=K))
             fig.add_trace(go.Scatter(x=x, y=y, mode='markers+lines', name=f'{M}'))
@@ -98,8 +100,9 @@ class Fold_and_Batch:
 
 
 if __name__ == "__main__":
+    instance = Fold_and_Batch(circuit_size=2**35, number_of_queries=50, blowup_factor=8, number_of_bits_per_field_elem=256, max_K=2**50)
     # instance = Fold_and_Batch(circuit_size=2**30, number_of_queries=50, blowup_factor=8, number_of_bits_per_field_elem=256, max_K=10000)
     # instance = Fold_and_Batch(circuit_size=2**40, number_of_queries=50, blowup_factor=8, number_of_bits_per_field_elem=256, max_K=10**5)
-    instance = Fold_and_Batch(circuit_size=2**50, number_of_queries=50, blowup_factor=8, number_of_bits_per_field_elem=256, max_K=100000)
+    # instance = Fold_and_Batch(circuit_size=2**50, number_of_queries=50, blowup_factor=8, number_of_bits_per_field_elem=256, max_K=100000)
     instance.plot_communication_cost()
     instance.plot_proof_size()
